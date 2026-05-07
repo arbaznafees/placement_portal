@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Applications - {{ drive.job_title }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-file-earmark-text"></i> Applications for {{ drive.job_title }}</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Drive Details</h5>
+        <p class="mb-1"><strong>Company:</strong> {{ drive.company.company_name }}</p>
+        <p class="mb-1"><strong>Deadline:</strong> {{ drive.application_deadline.strftime('%d %b %Y') }}</p>
+        <p class="mb-1"><strong>Min CGPA:</strong> {{ drive.min_cgpa }}</p>
+        <p class="mb-1"><strong>Total Applications:</strong> {{ applications|length }}</p>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>Student Name</th>
+                <th>Roll Number</th>
+                <th>Department</th>
+                <th>CGPA</th>
+                <th>Skills</th>
+                <th>Applied On</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.student.name }}</td>
+                <td>{{ application.student.roll_number }}</td>
+                <td>{{ application.student.department }}</td>
+                <td>{{ application.student.cgpa }}</td>
+                <td>{{ application.student.skills or 'N/A' }}</td>
+                <td>{{ application.application_date.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if application.status == 'Selected' %}
+                        <span class="badge bg-success">{{ application.status }}</span>
+                    {% elif application.status == 'Shortlisted' %}
+                        <span class="badge bg-info">{{ application.status }}</span>
+                    {% elif application.status == 'Rejected' %}
+                        <span class="badge bg-danger">{{ application.status }}</span>
+                    {% else %}
+                        <span class="badge bg-warning">{{ application.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="{{ url_for('company_update_application', application_id=application.id, status='Shortlisted') }}" class="btn btn-info">Shortlist</a>
+                        <a href="{{ url_for('company_update_application', application_id=application.id, status='Selected') }}" class="btn btn-success">Select</a>
+                        <a href="{{ url_for('company_update_application', application_id=application.id, status='Rejected') }}" class="btn btn-danger">Reject</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<a href="{{ url_for('company_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}

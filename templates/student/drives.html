@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Drives{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-briefcase"></i> Browse Placement Drives</h2>
+
+<div class="row">
+    {% for drive in drives %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ drive.job_title }}</h5>
+                <h6 class="text-muted mb-3">{{ drive.company.company_name }}</h6>
+                
+                <p class="mb-2"><i class="bi bi-geo-alt-fill"></i> <strong>Location:</strong> {{ drive.job_location or 'Not specified' }}</p>
+                <p class="mb-2"><i class="bi bi-cash-stack"></i> <strong>Package:</strong> {{ drive.salary_package or 'Not disclosed' }}</p>
+                <p class="mb-2"><i class="bi bi-graph-up"></i> <strong>Min CGPA:</strong> {{ drive.min_cgpa }}</p>
+                <p class="mb-2"><i class="bi bi-calendar-event"></i> <strong>Deadline:</strong> {{ drive.application_deadline.strftime('%d %b %Y') }}</p>
+                
+                <hr>
+                <p class="mb-2"><strong>Description:</strong></p>
+                <p class="text-muted">{{ drive.job_description[:150] }}...</p>
+                
+                <p class="mb-2"><strong>Eligibility:</strong></p>
+                <p class="text-muted">{{ drive.eligibility_criteria }}</p>
+                
+                {% if drive.id in applied_drive_ids %}
+                    <button class="btn btn-secondary w-100 mt-3" disabled><i class="bi bi-check-circle"></i> Already Applied</button>
+                {% else %}
+                    {% if current_user.cgpa < drive.min_cgpa %}
+                        <button class="btn btn-danger w-100 mt-3" disabled><i class="bi bi-x-circle"></i> CGPA Requirement Not Met</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#applyModal{{ drive.id }}">
+                            <i class="bi bi-send"></i> Apply Now
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply Modal -->
+    <div class="modal fade" id="applyModal{{ drive.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Apply for {{ drive.job_title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" action="{{ url_for('student_apply', drive_id=drive.id) }}">
+                    <div class="modal-body">
+                        <p><strong>Company:</strong> {{ drive.company.company_name }}</p>
+                        <p><strong>Position:</strong> {{ drive.job_title }}</p>
+                        <div class="mb-3">
+                            <label for="cover_letter" class="form-label">Cover Letter (Optional)</label>
+                            <textarea class="form-control" name="cover_letter" rows="4" placeholder="Why are you interested in this position?"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Application</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not drives %}
+    <div class="alert alert-info text-center">
+        <i class="bi bi-info-circle" style="font-size: 2rem;"></i>
+        <p class="mt-2 mb-0">No placement drives available at the moment. Check back later!</p>
+    </div>
+{% endif %}
+{% endblock %}

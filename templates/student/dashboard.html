@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-person-circle"></i> Welcome, {{ current_user.name }}!</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Your CGPA</h5>
+                <h2 class="mb-0">{{ current_user.cgpa }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Applications Sent</h5>
+                <h2 class="mb-0">{{ my_applications|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Available Drives</h5>
+                <h2 class="mb-0">{{ approved_drives|length }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3"><i class="bi bi-briefcase"></i> Recent Placement Drives</h4>
+<div class="row">
+    {% for drive in approved_drives[:3] %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ drive.job_title }}</h5>
+                <h6 class="text-muted">{{ drive.company.company_name }}</h6>
+                <p class="mb-2"><i class="bi bi-geo-alt"></i> {{ drive.job_location or 'Not specified' }}</p>
+                <p class="mb-2"><i class="bi bi-cash"></i> {{ drive.salary_package or 'Not disclosed' }}</p>
+                <p class="mb-2"><i class="bi bi-graph-up"></i> Min CGPA: {{ drive.min_cgpa }}</p>
+                <p class="mb-3"><i class="bi bi-calendar"></i> Deadline: {{ drive.application_deadline.strftime('%d %b %Y') }}</p>
+                
+                {% if drive.id in applied_drive_ids %}
+                    <button class="btn btn-secondary" disabled>Already Applied</button>
+                {% else %}
+                    <a href="{{ url_for('student_drives') }}" class="btn btn-primary">View & Apply</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h4 class="mt-4 mb-3"><i class="bi bi-clock-history"></i> My Recent Applications</h4>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Company</th>
+                <th>Job Title</th>
+                <th>Applied On</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in my_applications[:5] %}
+            <tr>
+                <td>{{ app.placement_drive.company.company_name }}</td>
+                <td>{{ app.placement_drive.job_title }}</td>
+                <td>{{ app.application_date.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if app.status == 'Selected' %}
+                        <span class="badge bg-success">{{ app.status }}</span>
+                    {% elif app.status == 'Shortlisted' %}
+                        <span class="badge bg-info">{{ app.status }}</span>
+                    {% elif app.status == 'Rejected' %}
+                        <span class="badge bg-danger">{{ app.status }}</span>
+                    {% else %}
+                        <span class="badge bg-warning">{{ app.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

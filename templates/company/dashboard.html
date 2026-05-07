@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Company Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-building"></i> {{ current_user.company_name }} Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Drives Created</h5>
+                <h2 class="mb-0">{{ drives|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Total Applications</h5>
+                <h2 class="mb-0">{{ total_applications }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <a href="{{ url_for('company_create_drive') }}" class="btn btn-primary btn-lg h-100 w-100 d-flex align-items-center justify-content-center">
+            <div>
+                <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
+                <div>Create New Drive</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<h4 class="mb-3">Your Placement Drives</h4>
+<div class="row">
+    {% for drive in drives %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ drive.job_title }}</h5>
+                <p class="text-muted mb-2">
+                    <i class="bi bi-calendar"></i> Deadline: {{ drive.application_deadline.strftime('%d %b %Y') }}
+                </p>
+                <p class="text-muted mb-2">
+                    <i class="bi bi-file-earmark-text"></i> Applications: {{ drive.applications|length }}
+                </p>
+                <p class="mb-3">
+                    {% if drive.status == 'Approved' %}
+                        <span class="badge bg-success">{{ drive.status }}</span>
+                    {% elif drive.status == 'Pending' %}
+                        <span class="badge bg-warning">{{ drive.status }}</span>
+                    {% elif drive.status == 'Closed' %}
+                        <span class="badge bg-secondary">{{ drive.status }}</span>
+                    {% else %}
+                        <span class="badge bg-danger">{{ drive.status }}</span>
+                    {% endif %}
+                </p>
+                <div class="btn-group" role="group">
+                    <a href="{{ url_for('company_applications', drive_id=drive.id) }}" class="btn btn-sm btn-primary">View Applications</a>
+                    <a href="{{ url_for('company_edit_drive', drive_id=drive.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    {% if drive.status != 'Closed' %}
+                        <a href="{{ url_for('company_close_drive', drive_id=drive.id) }}" class="btn btn-sm btn-secondary">Close</a>
+                    {% endif %}
+                    <a href="{{ url_for('company_delete_drive', drive_id=drive.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

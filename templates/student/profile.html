@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="mb-4"><i class="bi bi-person-badge"></i> My Profile</h2>
+
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Roll Number</label>
+                            <input type="text" class="form-control" value="{{ current_user.roll_number }}" disabled>
+                            <small class="text-muted">Cannot be changed</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" name="name" value="{{ current_user.name }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="{{ current_user.email }}" disabled>
+                            <small class="text-muted">Cannot be changed</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone *</label>
+                            <input type="tel" class="form-control" name="phone" value="{{ current_user.phone }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="department" class="form-label">Department *</label>
+                            <input type="text" class="form-control" name="department" value="{{ current_user.department }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cgpa" class="form-label">CGPA *</label>
+                            <input type="number" step="0.01" class="form-control" name="cgpa" value="{{ current_user.cgpa }}" min="0" max="10" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="graduation_year" class="form-label">Graduation Year *</label>
+                            <input type="number" class="form-control" name="graduation_year" value="{{ current_user.graduation_year }}" min="2020" max="2030" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="resume" class="form-label">Upload Resume (PDF/DOC)</label>
+                            <input type="file" class="form-control" name="resume" accept=".pdf,.doc,.docx">
+                            {% if current_user.resume_path %}
+                                <small class="text-success"><i class="bi bi-check-circle"></i> Resume uploaded: {{ current_user.resume_path }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="skills" class="form-label">Skills (comma-separated)</label>
+                        <input type="text" class="form-control" name="skills" value="{{ current_user.skills or '' }}" placeholder="Python, Java, React, SQL">
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

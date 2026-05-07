@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Drives{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-briefcase"></i> Manage Placement Drives</h2>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Company</th>
+                <th>Job Title</th>
+                <th>Min CGPA</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Applications</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drive in drives %}
+            <tr>
+                <td>{{ drive.id }}</td>
+                <td>{{ drive.company.company_name }}</td>
+                <td>{{ drive.job_title }}</td>
+                <td>{{ drive.min_cgpa }}</td>
+                <td>{{ drive.application_deadline.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if drive.status == 'Approved' %}
+                        <span class="badge bg-success">{{ drive.status }}</span>
+                    {% elif drive.status == 'Pending' %}
+                        <span class="badge bg-warning">{{ drive.status }}</span>
+                    {% elif drive.status == 'Rejected' %}
+                        <span class="badge bg-danger">{{ drive.status }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ drive.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ drive.applications|length }}</td>
+                <td>
+                    {% if drive.status == 'Pending' %}
+                        <a href="{{ url_for('admin_approve_drive', drive_id=drive.id) }}" class="btn btn-sm btn-success">Approve</a>
+                        <a href="{{ url_for('admin_reject_drive', drive_id=drive.id) }}" class="btn btn-sm btn-danger">Reject</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

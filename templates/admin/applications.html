@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}All Applications{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-file-earmark-text"></i> All Applications</h2>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>Application ID</th>
+                <th>Student</th>
+                <th>Company</th>
+                <th>Job Title</th>
+                <th>Applied On</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.id }}</td>
+                <td>{{ application.student.name }} ({{ application.student.roll_number }})</td>
+                <td>{{ application.placement_drive.company.company_name }}</td>
+                <td>{{ application.placement_drive.job_title }}</td>
+                <td>{{ application.application_date.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if application.status == 'Selected' %}
+                        <span class="badge bg-success">{{ application.status }}</span>
+                    {% elif application.status == 'Shortlisted' %}
+                        <span class="badge bg-info">{{ application.status }}</span>
+                    {% elif application.status == 'Rejected' %}
+                        <span class="badge bg-danger">{{ application.status }}</span>
+                    {% else %}
+                        <span class="badge bg-warning">{{ application.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

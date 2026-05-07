@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Application History{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-clock-history"></i> My Application History</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-primary">{{ applications|length }}</h3>
+                <p class="mb-0">Total Applications</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-info">{{ applications|selectattr('status', 'equalto', 'Shortlisted')|list|length }}</h3>
+                <p class="mb-0">Shortlisted</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-success">{{ applications|selectattr('status', 'equalto', 'Selected')|list|length }}</h3>
+                <p class="mb-0">Selected</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-danger">{{ applications|selectattr('status', 'equalto', 'Rejected')|list|length }}</h3>
+                <p class="mb-0">Rejected</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>Application ID</th>
+                <th>Company</th>
+                <th>Job Title</th>
+                <th>Location</th>
+                <th>Package</th>
+                <th>Applied On</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>#{{ app.id }}</td>
+                <td>{{ app.placement_drive.company.company_name }}</td>
+                <td>{{ app.placement_drive.job_title }}</td>
+                <td>{{ app.placement_drive.job_location or 'N/A' }}</td>
+                <td>{{ app.placement_drive.salary_package or 'N/A' }}</td>
+                <td>{{ app.application_date.strftime('%d %b %Y') }}</td>
+                <td>
+                    {% if app.status == 'Selected' %}
+                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ app.status }}</span>
+                    {% elif app.status == 'Shortlisted' %}
+                        <span class="badge bg-info"><i class="bi bi-star"></i> {{ app.status }}</span>
+                    {% elif app.status == 'Rejected' %}
+                        <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ app.status }}</span>
+                    {% else %}
+                        <span class="badge bg-warning"><i class="bi bi-hourglass-split"></i> {{ app.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not applications %}
+    <div class="alert alert-info text-center">
+        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+        <p class="mt-3 mb-0">You haven't applied to any drives yet. <a href="{{ url_for('student_drives') }}">Browse available drives</a></p>
+    </div>
+{% endif %}
+{% endblock %}

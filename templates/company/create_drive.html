@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Create Placement Drive{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="mb-4"><i class="bi bi-plus-circle"></i> Create Placement Drive</h2>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="job_title" class="form-label">Job Title *</label>
+                        <input type="text" class="form-control" name="job_title" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="job_description" class="form-label">Job Description *</label>
+                        <textarea class="form-control" name="job_description" rows="4" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="eligibility_criteria" class="form-label">Eligibility Criteria *</label>
+                        <textarea class="form-control" name="eligibility_criteria" rows="3" required placeholder="E.g., B.Tech in Computer Science, No backlogs"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="min_cgpa" class="form-label">Minimum CGPA *</label>
+                            <input type="number" step="0.01" class="form-control" name="min_cgpa" min="0" max="10" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="salary_package" class="form-label">Salary Package</label>
+                            <input type="text" class="form-control" name="salary_package" placeholder="E.g., 10-12 LPA">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="job_location" class="form-label">Job Location</label>
+                            <input type="text" class="form-control" name="job_location" placeholder="E.g., Bangalore">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="application_deadline" class="form-label">Application Deadline *</label>
+                        <input type="date" class="form-control" name="application_deadline" required>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('company_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Create Drive</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
